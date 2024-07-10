@@ -2200,8 +2200,19 @@ end
 coroutine.wrap(XHZD_fake_script)()
 local function NQHXEW_fake_script() -- TextButton_9.LocalScript 
 	local script = Instance.new('LocalScript', TextButton_9)
+	
+	local function setKeybind(key)
+		script.Parent.Text = key
+		pcall(function()
+			script.Parent.Parent.Keybind:Destroy()
+		end)
 
+		local e = Instance.new("BoolValue")
+		e.Parent = script.Parent.Parent
+		e.Name = "Keybind"
+	end
 
+	setKeybind("L")
 
 	local userInputService = game:GetService("UserInputService")
 	local function getmyebasdasda()
@@ -2213,7 +2224,7 @@ local function NQHXEW_fake_script() -- TextButton_9.LocalScript
 		local inputEvent
 		inputEvent = userInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 			if not gameProcessedEvent then
-				script.Parent.Text = "L" .. tostring(input.KeyCode.Name)
+				script.Parent.Text = "" .. tostring(input.KeyCode.Name)
 				inputEvent:Disconnect()
 				wait(0.1)
 				local e = Instance.new("BoolValue")
@@ -2232,7 +2243,6 @@ local function QKYM_fake_script() -- BUTTONDESIGN.toggleoff/on
 	local script = Instance.new('LocalScript', BUTTONDESIGN)
 
 	local frame = script.Parent.Parent.Parent.Parent.Parent.ESPFRAME
-
 
 	local UIS = game:GetService("UserInputService")
 	local open = true
