@@ -2575,6 +2575,9 @@ end
 if isMobile() then
     mobilemingui()
 end
+
+mobilemingui()
+
 task.delay(3.5, RayfieldLibrary.LoadConfiguration, RayfieldLibrary)
 
 return RayfieldLibrary
