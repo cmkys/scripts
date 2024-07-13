@@ -2493,17 +2493,88 @@ end
 local UserInputService = game:GetService("UserInputService")
 local GUIOpen = false
 
+function mobilemingui()
+			-- Creating a ScreenGui
+			local screenGui = Instance.new("ScreenGui")
+			screenGui.Name = "CustomGui"
+			screenGui.Parent = game.CoreGui
+
+			-- Creating a Frame
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(0, 100, 0, 100)
+			frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+			frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+			frame.Active = true
+			frame.Draggable = true -- Makes the frame draggable on PC
+			frame.Parent = screenGui
+
+			-- Creating a Button
+			local button = Instance.new("TextButton")
+			button.Size = UDim2.new(0, 100, 0, 100)
+			button.Position = UDim2.new(0.5, -50, 0.5, -25)
+			button.Text = "Minimize"
+			button.TextColor3 = Color3.fromRGB(255, 255, 255)
+			button.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+			button.Parent = frame
+
+			-- Button Click Event
+			button.MouseButton1Click:Connect(function()
+				if isClosed then
+					togglegui()
+				end
+			end)
+
+			-- Mobile Draggable Logic
+			local dragging
+			local dragInput
+			local dragStart
+			local startPos
+
+			local function update(input)
+				local delta = input.Position - dragStart
+				frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			end
+
+			frame.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+					dragging = true
+					dragStart = input.Position
+					startPos = frame.Position
+
+					input.Changed:Connect(function()
+						if input.UserInputState == Enum.UserInputState.End then
+							dragging = false
+						end
+					end)
+				end
+			end)
+
+			frame.InputChanged:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
+					dragInput = input
+				end
+			end)
+
+			game:GetService("UserInputService").InputChanged:Connect(function(input)
+				if dragging and input == dragInput then
+					update(input)
+				end
+			end)
+		end
+
 local function ToggleGUI()
     Rayfield.Enabled = not Rayfield.Enabled
 end
 
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.KeyCode == Enum.KeyCode.F then -- Change this to the key you want
-        ToggleGUI()
-    end
-end)
+local UserInputService = game:GetService("UserInputService")
 
+local function isMobile()
+    return UserInputService.TouchEnabled
+end
+
+if isMobile() then
+    mobilemingui()
+end
 task.delay(3.5, RayfieldLibrary.LoadConfiguration, RayfieldLibrary)
 
 return RayfieldLibrary
